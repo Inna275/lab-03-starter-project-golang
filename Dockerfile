@@ -1,4 +1,4 @@
-FROM golang:1.24
+FROM golang:1.24 AS builder
 
 WORKDIR /app
 
@@ -10,6 +10,10 @@ COPY . .
 RUN mkdir -p build
 RUN go build -o build/fizzbuzz
 
+FROM scratch
+
+COPY --from=builder /app/build/fizzbuzz /fizzbuzz
+
 EXPOSE 8080
 
-CMD ["./build/fizzbuzz", "serve"]
+CMD ["./fizzbuzz", "serve"]
