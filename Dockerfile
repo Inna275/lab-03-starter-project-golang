@@ -7,12 +7,12 @@ RUN go mod download
 
 COPY . .
 
-RUN mkdir -p build
-RUN go build -o build/fizzbuzz
+RUN CGO_ENABLED=0 go build -ldflags "-w -s -extldflags '-static'" -o build/fizzbuzz
 
 FROM scratch
 
 COPY --from=builder /app/build/fizzbuzz /fizzbuzz
+COPY --from=builder /app/templates/index.html /templates/index.html
 
 EXPOSE 8080
 
